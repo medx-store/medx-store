@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر ميدكس | الرئيسية</title>
+    <!-- خطوط جوجل (القاهرة) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- مكتبة الأيقونات (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #05070a;
+            --bg-card: rgba(13, 17, 23, 0.75);
+            --primary-color: #00e5ff;
+            --primary-glow: rgba(0, 229, 255, 0.6);
+            --text-light: #ffffff;
+            --text-muted: #9aa4b2;
+            --danger-color: #f85149;
+            --border-color: rgba(33, 44, 61, 0.9);
+            --modal-bg: #0a0d14;
+            --input-bg: #05070a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-dark); color: var(--text-light); 
+            line-height: 1.6; overflow-x: hidden; scroll-behavior: smooth;
+            position: relative; min-height: 100vh;
+        }
+
+        /* =========================================
+           توهج وإضاءة سحرية خفيفة للنصوص (Glow Text)
+           ========================================= */
+        .magic-glow {
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-glow);
+            animation: textGlowPulse 3s ease-in-out infinite alternate;
+        }
+        @keyframes textGlowPulse {
+            0% { text-shadow: 0 0 6px var(--primary-color), 0 0 12px var(--primary-glow); }
+            100% { text-shadow: 0 0 16px var(--primary-color), 0 0 28px var(--primary-glow), 0 0 40px rgba(0, 229, 255, 0.4); }
+        }
+
+        /* =========================================
+           الجزيئات المتطايرة 3D (Particles)
+           ========================================= */
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+        /* =========================================
+           شاشة التحميل والوميض المائي
+           ========================================= */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #020305; z-index: 99999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .loader-logo { width: 110px; border-radius: 25px; animation: loaderPulse 1s infinite alternate ease-in-out; margin-bottom: 20px; }
+        .loader-text { color: var(--primary-color); font-size: 22px; font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 15px var(--primary-glow); animation: textPulse 1s infinite alternate; }
+        @keyframes loaderPulse { 0% { transform: scale(0.9); box-shadow: 0 0 20px var(--primary-glow); } 100% { transform: scale(1.15); box-shadow: 0 0 50px var(--primary-color); } }
+        @keyframes textPulse { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .bg-watermark {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 13vw; font-weight: 900; color: rgba(0, 229, 255, 0.03); -webkit-text-stroke: 1px rgba(0, 229, 255, 0.05); white-space: nowrap; z-index: -2; pointer-events: none; text-transform: uppercase; animation: moveWatermark 12s ease-in-out infinite alternate;
+        }
+        @keyframes moveWatermark { 0% { transform: translate(-65%, -50%) scale(1); } 100% { transform: translate(-35%, -50%) scale(1.05); } }
+
+        body::before, body::after { content: ''; position: fixed; width: 600px; height: 600px; border-radius: 50%; pointer-events: none; z-index: -2; filter: blur(140px); opacity: 0.2; animation: pulseGlow 7s ease-in-out infinite alternate; }
+        body::before { background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%); top: -150px; right: -100px; }
+        body::after { background: radial-gradient(circle, #ff9800 0%, transparent 70%); bottom: -150px; left: -100px; animation-delay: 3.5s; }
+        @keyframes pulseGlow { 0% { transform: scale(0.85); opacity: 0.15; } 100% { transform: scale(1.15); opacity: 0.35; } }
+
+        /* =========================================
+           شريط التنقل ومغير الألوان والشارة المباشرة
+           ========================================= */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 16px 40px; background-color: rgba(5, 7, 10, 0.8); border-bottom: 1px solid rgba(0, 229, 255, 0.1); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(25px); flex-wrap: wrap; gap: 15px; }
+        .logo-area { display: flex; align-items: center; gap: 15px; font-size: 26px; font-weight: 900; color: var(--primary-color); text-shadow: 0 0 20px var(--primary-glow); cursor: pointer; }
+        .logo-area img { width: 45px; height: 45px; border-radius: 12px; transition: 0.4s; }
+        
+        .header-controls { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        
+        .live-badge {
+            display: flex; align-items: center; gap: 8px; background: rgba(37, 211, 102, 0.1);
+            border: 1px solid rgba(37, 211, 102, 0.3); padding: 6px 14px; border-radius: 20px;
+            font-size: 13px; font-weight: 800; color: #25d366; box-shadow: 0 0 15px rgba(37, 211, 102, 0.2);
+        }
+        .live-dot {
+            width: 9px; height: 9px; background-color: #25d366; border-radius: 50%;
+            box-shadow: 0 0 10px #25d366; animation: livePulse 1.5s infinite;
+        }
+        @keyframes livePulse { 0% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.7; } }
+
+        .nav-links { display: flex; gap: 12px; list-style: none; }
+        .nav-item { color: var(--text-muted); text-decoration: none; font-weight: 800; padding: 10px 18px; border-radius: 12px; transition: 0.3s; font-size: 15px; cursor: pointer; }
+        .nav-item.active { color: #000; background-color: var(--primary-color); box-shadow: 0 0 20px var(--primary-glow); }
+
+        .theme-switcher { display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 30px; border: 1px solid var(--border-color); }
+        .theme-btn { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; transition: 0.3s; }
+        .theme-btn:hover { transform: scale(1.2); }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* =========================================
+           القسم الافتتاحي وتأثير الكتابة
+           ========================================= */
+        .hero { text-align: center; padding: 70px 20px 20px; position: relative; z-index: 1; }
+        .hero-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; }
+        .hero-title-wrapper h1 { font-size: 60px; font-weight: 900; }
+        .main-hero-logo { width: 100px; height: 100px; border-radius: 24px; box-shadow: 0 0 40px var(--primary-glow); animation: floating 3.5s ease-in-out infinite; }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); box-shadow: 0 0 55px var(--primary-color); } }
+        
+        .hero p { max-width: 650px; margin: 0 auto 30px; font-size: 18px; font-weight: 700; line-height: 1.8; min-height: 60px; }
+        .typing-text { border-left: 2px solid var(--primary-color); padding-left: 5px; color: var(--text-muted); animation: blinkCursor 0.8s infinite; }
+        .typing-finished { border-left: none; color: #fff; text-shadow: 0 0 15px var(--primary-glow); transition: all 0.5s ease; animation: none; }
+        @keyframes blinkCursor { 0%, 100% { border-color: transparent; } 50% { border-color: var(--primary-color); } }
+
+        .hero-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+        .btn { padding: 14px 32px; border-radius: 12px; font-weight: 800; font-size: 16px; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; border: none; text-decoration: none; cursor: pointer; }
+        .btn-filled { background: var(--primary-color); color: #000; box-shadow: 0 0 25px var(--primary-glow); }
+        .warning-banner { background: var(--danger-bg); color: var(--danger-color); border: 2px solid rgba(248, 81, 73, 0.3); padding: 18px 25px; border-radius: 14px; max-width: 900px; margin: 0 auto 40px; text-align: center; font-size: 15px; font-weight: 800; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+
+        /* =========================================
+           المربعات (الإدارة وقنوات التواصل)
+           ========================================= */
+        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); }
+
+        .interactive-box { background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color); padding: 40px; margin-bottom: 50px; backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.08); }
+        .interactive-box .badge { background: rgba(0, 229, 255, 0.1); color: var(--primary-color); padding: 8px 20px; border-radius: 30px; font-size: 14px; font-weight: 900; margin-bottom: 15px; display: inline-block; border: 1px solid rgba(0, 229, 255, 0.4); transform: translateZ(20px); }
+        .interactive-box h2 { font-size: 32px; margin-bottom: 15px; font-weight: 900; transform: translateZ(30px); }
+        .interactive-box p { color: var(--text-muted); font-size: 16px; font-weight: 700; transform: translateZ(20px); }
+
+        .section-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .section-header h3 { font-size: 28px; font-weight: 900; }
+
+        .channels-grid, .admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 50px; }
+        
+        .channel-card, .admin-card { 
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; 
+            padding: 22px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; 
+            backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.08);
+            transform-style: preserve-3d; transition: border-color 0.3s, box-shadow 0.3s; 
+        }
+        
+        .admin-card { display: block; padding: 35px 15px; text-align: center; }
+
+        .card-info, .icon-box, .btn-open { transform: translateZ(20px); }
+        .admin-card i, .admin-card h4, .admin-card p { transform: translateZ(25px); }
+
+        .card-right { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .icon-box { width: 55px; height: 55px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 26px; color: #fff; flex-shrink: 0; }
+        .bg-wa { background-color: #25d366; } .bg-tg { background-color: #0088cc; } .bg-fb { background-color: #1877f2; } .bg-tk { background-color: #000000; border: 1px solid #333; }
+        .card-info h4 { font-size: 18px; color: var(--text-light); margin-bottom: 4px; font-weight: 800; }
+        .card-info p { font-size: 14px; color: var(--text-muted); font-weight: 700; line-height: 1.4; }
+        .btn-open { background: transparent; color: var(--text-muted); border: 2px solid var(--border-color); padding: 8px 16px; border-radius: 10px; font-size: 14px; font-weight: 800; white-space: nowrap; }
+        
+        .admin-card i { font-size: 42px; color: #25d366; margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(37, 211, 102, 0.5)); }
+        .admin-card h4 { font-size: 20px; color: var(--text-light); margin-bottom: 8px; direction: ltr; font-weight: 900; }
+        
+        .admin-card p { 
+            font-size: 16px; 
+            color: #00e5ff; 
+            font-weight: 900; 
+            text-shadow: 0 0 12px rgba(0, 229, 255, 0.6); 
+            letter-spacing: 0.5px;
+        }
+
+        /* =========================================
+           دليل الشحن السريع في 3 خطوات (How It Works)
+           ========================================= */
+        .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 45px; }
+        .step-card {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px; padding: 25px 20px;
+            text-align: center; backdrop-filter: blur(15px); position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.3s;
+        }
+        .step-card:hover { border-color: var(--primary-color); transform: translateY(-5px); box-shadow: 0 15px 35px var(--primary-glow); }
+        .step-number {
+            width: 40px; height: 40px; background: var(--primary-color); color: #000; font-weight: 900; font-size: 18px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        .step-card h4 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: #fff; }
+        .step-card p { font-size: 14px; color: var(--text-muted); font-weight: 700; }
+
+        /* =========================================
+           قسم مميزات المتجر "ليه تختار ميدكس؟" (Why Choose Us)
+           ========================================= */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 60px; }
+        .feature-box {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px; padding: 30px 20px;
+            text-align: center; backdrop-filter: blur(15px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; overflow: hidden;
+        }
+        .feature-box:hover { border-color: var(--primary-color); transform: translateY(-8px); box-shadow: 0 15px 40px var(--primary-glow); background: rgba(18, 24, 33, 0.85); }
+        .feature-icon { font-size: 40px; color: var(--primary-color); margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--primary-glow)); }
+        .feature-box h4 { font-size: 20px; font-weight: 900; margin-bottom: 8px; color: #fff; }
+        .feature-box p { font-size: 14px; color: var(--text-muted); font-weight: 700; line-height: 1.6; }
+
+        /* =========================================
+           قسم الأسئلة الشائعة (FAQ Accordion)
+           ========================================= */
+        .faq-section { margin-bottom: 60px; }
+        .faq-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 15px; overflow: hidden; backdrop-filter: blur(10px); }
+        .faq-question { width: 100%; text-align: right; padding: 20px; background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .faq-question i { color: var(--primary-color); transition: 0.3s; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: rgba(0,0,0,0.2); }
+        .faq-answer p { padding: 0 20px 20px; color: var(--text-muted); font-weight: 700; font-size: 15px; }
+        .faq-item.active .faq-question i { transform: rotate(180deg); color: #ff9800; }
+        .faq-item.active { border-color: var(--primary-color); box-shadow: 0 0 20px var(--primary-glow); }
+
+        /* =========================================
+           قسم الخدمات المطوّر (مع زر المفضلة Wishlist)
+           ========================================= */
+        #services-view { display: none; animation: fadeIn 0.4s ease-out; }
+        #home-view { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 50px; }
+        
+        .service-card { 
+            --game-color: #00e5ff; 
+            background: linear-gradient(145deg, rgba(13, 17, 23, 0.9), rgba(8, 11, 16, 0.95));
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 16px; 
+            padding: 30px 20px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        /* زر المفضلة (Wishlist / Favorites) */
+        .fav-btn {
+            position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color); width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+            cursor: pointer; transition: 0.3s; z-index: 5;
+        }
+        .fav-btn:hover { color: #ff4757; border-color: #ff4757; transform: scale(1.1); }
+        .fav-btn.active { color: #ff4757; background: rgba(255, 71, 87, 0.2); border-color: #ff4757; }
+
+        .service-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--game-color), transparent);
+            transition: 0.5s;
+        }
+
+        .service-card:hover::after { left: 100%; }
+
+        .service-card:hover {
+            border-color: var(--game-color);
+            box-shadow: 0 0 25px var(--game-color), inset 0 0 15px rgba(255, 255, 255, 0.03);
+            transform: translateY(-6px);
+            background: rgba(18, 24, 35, 0.98);
+        }
+
+        .service-card:active {
+            transform: scale(0.97);
+            box-shadow: 0 0 35px var(--game-color);
+        }
+
+        .service-icon { 
+            font-size: 45px; 
+            color: var(--game-color); 
+            margin-bottom: 12px; 
+            transition: 0.3s; 
+            filter: drop-shadow(0 0 10px var(--game-color)); 
+        }
+
+        .service-card:hover .service-icon {
+            filter: drop-shadow(0 0 25px var(--game-color)) scale(1.15);
+            transform: translateY(-3px);
+        }
+        
+        .service-card h4 { font-size: 17px; color: var(--text-light); margin-bottom: 4px; font-weight: 800; }
+        .service-card p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+        /* =========================================
+           إشعار منبثق للطلبات (Toast Notification)
+           ========================================= */
+        .toast-notification { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: rgba(13, 17, 23, 0.95); border: 2px solid var(--primary-color); color: #fff; padding: 18px 35px; border-radius: 50px; box-shadow: 0 0 40px var(--primary-glow); z-index: 100000; font-weight: 900; font-size: 16px; display: flex; align-items: center; gap: 15px; transition: bottom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); }
+        .toast-notification.show { bottom: 50px; }
+
+        /* زر الواتساب العائم المباشر للمدير */
+        .floating-wa { position: fixed; bottom: 35px; left: 35px; width: 65px; height: 65px; background-color: #25d366; color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 35px; box-shadow: 0 0 25px rgba(37, 211, 102, 0.6); z-index: 999; animation: floatBtn 3s infinite ease-in-out; text-decoration: none; }
+        .floating-wa:hover { color: #fff; transform: scale(1.1); }
+        @keyframes floatBtn { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        
+        footer { background: rgba(5, 7, 10, 0.95); border-top: 1px solid rgba(0, 229, 255, 0.15); padding: 45px 20px; text-align: center; margin-top: 70px; }
+        .footer-logo { width: 65px; border-radius: 16px; margin-bottom: 15px; filter: grayscale(20%); box-shadow: 0 0 20px var(--primary-glow); }
+        .footer-text { color: var(--text-light); font-size: 15px; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .footer-subtext { color: var(--text-muted); font-size: 13px; font-weight: 700; margin-bottom: 20px; }
+        .footer-links { display: flex; justify-content: center; gap: 20px; }
+        .footer-links a { color: var(--primary-color); text-decoration: none; font-size: 14px; font-weight: 800; transition: 0.3s; }
+        .footer-links a:hover { color: #fff; text-shadow: 0 0 10px var(--primary-color); }
+        
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(15px); }
+        .modal-content { background: var(--modal-bg); margin: 5% auto; padding: 40px; border: 1px solid rgba(0, 229, 255, 0.2); width: 90%; max-width: 500px; border-radius: 24px; position: relative; box-shadow: 0 25px 60px var(--primary-glow); animation: modalOpen 0.3s; border-top: 1px solid rgba(255,255,255,0.1); }
+        @keyframes modalOpen { from { transform: scale(0.8) translateY(30px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+        .close { color: var(--text-muted); position: absolute; top: 20px; right: 25px; font-size: 28px; font-weight: 900; cursor: pointer; }
+        .modal-content h3 { text-align: center; margin-bottom: 25px; color: #fff; font-size: 24px; font-weight: 900; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 18px; }
+        form label { display: block; margin-top: 20px; margin-bottom: 10px; font-size: 15px; font-weight: 800; color: #a5b0c0; }
+        .dark-input { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #1a2332; background-color: var(--input-bg); color: #fff; font-weight: 700; margin-bottom: 10px;}
+        .method-btn { background: var(--input-bg); border: 2px solid #1a2332; color: #fff; width: 100%; padding: 18px; border-radius: 14px; margin-bottom: 16px; font-weight: 900; font-size: 18px; cursor: pointer; transition: 0.3s;}
+        .method-btn:hover { border-color: #ff9800; color: #ff9800; box-shadow: 0 0 25px rgba(255, 152, 0, 0.25); transform: translateY(-4px); }
+        .btn-whatsapp-glow { background-color: #25d366; color: #fff; border: none; width: 100%; padding: 18px; border-radius: 14px; font-size: 19px; font-weight: 900; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s;}
+        .btn-whatsapp-glow:hover { background-color: #1ebc59; box-shadow: 0 12px 45px rgba(37, 211, 102, 0.6); transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+
+    <!-- الجزيئات المتطايرة -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- شاشة التحميل -->
+    <div id="preloader">
+        <img src="sc.jpeg" alt="Medx Loading" class="loader-logo">
+        <div class="loader-text">𝑴𝑬𝑫𝑿 𝑺𝑻𝑶𝑹𝑬</div>
+    </div>
+
+    <!-- الإشعار المنبثق -->
+    <div id="toast" class="toast-notification">
+        <span class="toast-icon">🚀</span>
+        جهزنا طلبك يا بطل.. ثواني وهنحولك للواتساب
+    </div>
+
+    <!-- الكلمة المائية -->
+    <div class="bg-watermark">𝑴𝑬𝑫𝑿 𝑺𝑻𝑶𝑹𝑬</div>
+
+    <!-- شريط التنقل مع شارة الحالة ومغير الألوان -->
+    <header>
+        <div class="logo-area" onclick="switchTab('home')">
+            <img src="sc.jpeg" alt="Medx Logo"> <span class="magic-glow">𝑴𝑬𝑫𝑿 𝑺𝑻𝑶𝑹𝑬</span>
+        </div>
+        <div class="header-controls">
+            <div class="live-badge">
+                <span class="live-dot"></span> الدعم وخدمة الشحن متواجدون الآن 🟢
+            </div>
+            <div class="theme-switcher" title="اختار لون إضاءة الموقع">
+                <div class="theme-btn" style="background: #00e5ff;" onclick="setTheme('#00e5ff', 'rgba(0, 229, 255, 0.6)')"></div>
+                <div class="theme-btn" style="background: #ff9800;" onclick="setTheme('#ff9800', 'rgba(255, 152, 0, 0.6)')"></div>
+                <div class="theme-btn" style="background: #2ecc71;" onclick="setTheme('#2ecc71', 'rgba(46, 204, 113, 0.6)')"></div>
+                <div class="theme-btn" style="background: #a855f7;" onclick="setTheme('#a855f7', 'rgba(168, 85, 247, 0.6)')"></div>
+            </div>
+            <ul class="nav-links">
+                <li><a class="nav-item active" id="nav-home" onclick="switchTab('home')">الرئيسية</a></li>
+                <li><a class="nav-item" id="nav-services" onclick="switchTab('services')">الخدمات</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- الرئيسية -->
+    <main id="home-view">
+        <section class="hero reveal">
+            <div class="hero-title-wrapper">
+                <img src="sc.jpeg" alt="Medx Logo" class="main-hero-logo">
+                <h1 class="magic-glow">𝑴𝑬𝑫𝑿 𝑺𝑻𝑶𝑹𝑬</h1>
+            </div>
+            
+            <p id="typing-effect" class="typing-text"></p>
+            
+            <div class="hero-buttons">
+                <button onclick="switchTab('services')" class="btn btn-filled">الخدمات</button>
+            </div>
+            <div class="warning-banner">
+                ⚠️ خلي بالك يا بطل من الحسابات الوهمية! إحنا مش مسؤولين عن أي تعامل بره الروابط والأرقام الرسمية الموجودة في الصفحة دي.
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- صندوق المقدمة -->
+            <div class="interactive-box tilt-card reveal">
+                <span class="badge">𝑴𝑬𝑫𝑿 𝑺𝑻𝑶𝑹𝑬 LIVE</span>
+                <h2 class="magic-glow">كل روابطنا في مكان واحد عشانك 🚀</h2>
+                <p>جمعنالك كل قنواتنا وخدماتنا في واجهة واحدة سريعة وشيك، عشان توصل للي إنت عايزه في ثواني وبدون أي لغبطة، سواء من الموبايل أو الكمبيوتر.</p>
+            </div>
+
+            <!-- قنوات التواصل -->
+            <div class="section-header reveal">
+                <i class="fa-solid fa-link" style="color: var(--primary-color); font-size: 26px;"></i>
+                <h3 class="magic-glow">عيلتنا على السوشيال ميديا 🌐</h3>
+            </div>
+            <div class="channels-grid">
+                <a href="https://whatsapp.com/channel/0029Vb7tFqB4NVibbkKFyv1s" target="_blank" class="channel-card tilt-card reveal"><div class="card-right"><div class="icon-box bg-wa"><i class="fa-brands fa-whatsapp"></i></div><div class="card-info"><h4>قناة الشحن والمسابقات</h4><p>نورنا هنا عشان مسابقاتنا مبتخلصش</p></div></div><div class="card-left"><span class="btn-open">انضم لينا</span></div></a>
+                <a href="https://whatsapp.com/channel/0029VbA3ZppEFeXbq7xdxB41" target="_blank" class="channel-card tilt-card reveal"><div class="card-right"><div class="icon-box bg-wa"><i class="fa-brands fa-whatsapp"></i></div><div class="card-info"><h4>قناة الإثباتات</h4><p>شغلنا وإثباتاتنا كلها هنا</p></div></div><div class="card-left"><span class="btn-open">شوف بنفسك</span></div></a>
+                <a href="https://chat.whatsapp.com/DTje8DoVhVWDi7zGht6abv?s=cl&p=a&ilr=0" target="_blank" class="channel-card tilt-card reveal"><div class="card-right"><div class="icon-box bg-wa"><i class="fa-brands fa-whatsapp"></i></div><div class="card-info"><h4 style="font-family: serif;">جروب 𝑴𝑬𝑫𝑿 الاول</h4><p>أول جروب لعيلتنا، شاركنا نقاشاتك</p></div></div><div class="card-left"><span class="btn-open">انضم للجروب</span></div></a>
+                <a href="https://chat.whatsapp.com/Fm1FRXM9Pp50O308KSEURQ?mode=gi_t" target="_blank" class="channel-card tilt-card reveal"><div class="card-right"><div class="icon-box bg-wa"><i class="fa-brands fa-whatsapp"></i></div><div class="card-info"><h4 style="font-family: serif;">جروب 𝑴𝑬𝑫𝑿 الثاني</h4><p>الجروب التاني للي مالحقش الأول</p></div></div><div class="card-left"><span class="btn-open">انضم للجروب</span></div></a>
+                <a href="https://t.me/medx_store" target="_blank" class="channel-card tilt-card reveal"><div class="card-right"><div class="icon-box bg-tg"><i class="fa-brands fa-telegram"></i></div><div class="card-info"><h4>تليجرام المدير</h4><p>لو احتجتني في أي وقت كلمني دايركت</p></div></div><div class="card-left"><span class="btn-open">كلمني هنا</span></div></a>
+                <a href="https://tiktok.com/@medx_1k" target="_blank" class="channel-card tilt-card reveal"><div class="card-right"><div class="icon-box bg-tk"><i class="fa-brands fa-tiktok"></i></div><div class="card-info"><h4>حساب التيك توك</h4><p>فيديوهاتنا وجامدنا كله هناك</p></div></div><div class="card-left"><span class="btn-open">تابعنا</span></div></a>
+                <a href="https://www.facebook.com/share/v/1AvXzLwdJt/" target="_blank" class="channel-card tilt-card reveal"><div class="card-right"><div class="icon-box bg-fb"><i class="fa-brands fa-facebook-f"></i></div><div class="card-info"><h4>بوست ضمان فيسبوك</h4><p>عشان تتطمن وإنت بتتعامل معانا</p></div></div><div class="card-left"><span class="btn-open">افتح البوست</span></div></a>
+            </div>
+
+            <!-- الإدارة -->
+            <div class="section-header reveal" style="color: var(--primary-color);">
+                <i class="fa-solid fa-headset" style="font-size: 28px;"></i>
+                <h3 class="magic-glow">إحنا هنا عشانك.. تواصل مع الإدارة 🎧</h3>
+            </div>
+            <div class="admin-grid">
+                <a href="https://wa.me/201002173301" target="_blank" class="admin-card tilt-card reveal"><i class="fa-brands fa-whatsapp"></i><h4>+20 100 217 3301</h4><p>المدير</p></a>
+                <a href="https://wa.me/201096358709" target="_blank" class="admin-card tilt-card reveal"><i class="fa-brands fa-whatsapp"></i><h4>+20 109 635 8709</h4><p>المساعد الأول</p></a>
+                <a href="https://wa.me/201041511734" target="_blank" class="admin-card tilt-card reveal"><i class="fa-brands fa-whatsapp"></i><h4>+20 104 151 1174</h4><p>المساعد الثاني</p></a>
+                <a href="https://wa.me/201041519325" target="_blank" class="admin-card tilt-card reveal"><i class="fa-brands fa-whatsapp"></i><h4>+20 104 151 9325</h4><p>المساعد الثالث</p></a>
+            </div>
+
+            <!-- الأسئلة الشائعة -->
+            <div class="section-header reveal">
+                <i class="fa-solid fa-circle-question" style="color: #ff9800; font-size: 28px;"></i>
+                <h3 class="magic-glow">لو بتسأل نفسك.. 🤔</h3>
+            </div>
+            <div class="faq-section reveal">
+                <div class="faq-item">
+                    <button class="faq-question">هل الشحن آمن ومضمون 100%؟ <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>يا بطل إنت في أمان تام! جميع عمليات الشحن بتتم بطرق رسمية وموثقة عبر معرف اللاعب (ID) أو الحساب من غير أي خطر أو بان نهائي.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">يا ترى الشحن بياخد وقت قد إيه؟ <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>إحنا بتوع الإنجاز! الشحن فوري وبياخد من دقيقة لـ 5 دقايق بالظبط أول ما نتأكد من تحويلك على الواتساب.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">إيه طرق الدفع اللي شغالين بيها؟ <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>شغالين بكل اللي يريحك: فودافون كاش، اتصالات كاش، أورانج كاش، انستا باي، وأي محفظة إلكترونية في مصر.</p></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- قسم الخدمات -->
+    <main id="services-view">
+        <div class="container" style="padding-top: 40px;">
+            
+            <div class="section-header reveal">
+                <i class="fa-solid fa-list-check" style="color: var(--primary-color); font-size: 26px;"></i>
+                <h3 class="magic-glow">إزاي تشحن معنا في 3 خطوات؟ 🎯</h3>
+            </div>
+            <div class="steps-grid reveal">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h4>اختار لعبتك وباقتك</h4>
+                    <p>حدد اللعبة والباقة اللي تعجبك من الأقسام تحت.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h4>ادخل بياناتك</h4>
+                    <p>اكتب الآيدي أو حسابك واسمك ورقمك بكل أمان.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h4>استلم شحنك فوراً</h4>
+                    <p>هنتحول للواتساب ويوصلك شحنك في ثواني.</p>
+                </div>
+            </div>
+
+            <div class="section-header reveal" style="margin-top: 40px;">
+                <i class="fa-solid fa-gamepad" style="color: var(--primary-color); font-size: 32px;"></i>
+                <h3 class="magic-glow">اختار لعبتك وعيش! 🎮</h3>
+            </div>
+            <p class="reveal" style="color: var(--text-muted); margin-bottom: 30px; font-size: 16px; font-weight: 800;">دوس على اللعبة اللي بتلعبها، اختار الباقة اللي تناسبك، وطلبك هيتبعت للإدارة فوراً على الواتساب.</p>
+            
+            <div class="services-grid">
+                <!-- فري فاير -->
+                <div class="service-card reveal" style="--game-color: #ff9800;" onclick="openMethodModal('ff', 'فري فاير')">
+                    <span class="fav-btn" onclick="toggleFavorite(event, this)" title="إضافة للمفضلة"><i class="fa-regular fa-heart"></i></span>
+                    <i class="fa-solid fa-fire service-icon"></i>
+                    <h4>فري فاير (Free Fire)</h4>
+                    <p>شحن جواهر، عضويات، دروبات</p>
+                </div>
+                
+                <!-- ببجي -->
+                <div class="service-card reveal" style="--game-color: #f39c12;" onclick="openMethodModal('pubg', 'ببجي موبايل')">
+                    <span class="fav-btn" onclick="toggleFavorite(event, this)" title="إضافة للمفضلة"><i class="fa-regular fa-heart"></i></span>
+                    <i class="fa-solid fa-parachute-box service-icon"></i>
+                    <h4>ببجي موبايل (PUBG)</h4>
+                    <p>شحن شدات، برايم، عروض ازدهار</p>
+                </div>
+
+                <!-- بيس -->
+                <div class="service-card reveal" style="--game-color: #3498db;" onclick="openDirectOrder('pes', 'بيس موبايل')">
+                    <span class="fav-btn" onclick="toggleFavorite(event, this)" title="إضافة للمفضلة"><i class="fa-regular fa-heart"></i></span>
+                    <i class="fa-solid fa-futbol service-icon"></i>
+                    <h4>بيس موبايل (PES)</h4>
+                    <p>شحن كوينز بأفضل الأسعار</p>
+                </div>
+
+                <!-- فيفا -->
+                <div class="service-card reveal" style="--game-color: #2ecc71;" onclick="openDirectOrder('fifa', 'فيفا موبايل')">
+                    <span class="fav-btn" onclick="toggleFavorite(event, this)" title="إضافة للمفضلة"><i class="fa-regular fa-heart"></i></span>
+                    <i class="fa-solid fa-trophy service-icon"></i>
+                    <h4>فيفا موبايل (FIFA)</h4>
+                    <p>شحن بوينتس (Points) مضمون</p>
+                </div>
+
+                <!-- تيك توك -->
+                <div class="service-card reveal" style="--game-color: #ff0050;" onclick="openDirectOrder('tiktok', 'عملات تيك توك')">
+                    <span class="fav-btn" onclick="toggleFavorite(event, this)" title="إضافة للمفضلة"><i class="fa-regular fa-heart"></i></span>
+                    <i class="fa-brands fa-tiktok service-icon"></i>
+                    <h4>تيك توك (TikTok)</h4>
+                    <p>شحن عملات بأرخص سعر</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- مميزات المتجر قبل الفوتر -->
+    <div class="container">
+        <div class="section-header reveal" style="margin-top: 20px;">
+            <i class="fa-solid fa-shield-cat" style="color: var(--primary-color); font-size: 28px;"></i>
+            <h3 class="magic-glow">ليه تختار 𝑴𝑬𝑫𝑿 𝑺𝑻𝑶𝑹𝑬؟ 💎</h3>
+        </div>
+        <div class="features-grid reveal">
+            <div class="feature-box">
+                <i class="fa-solid fa-bolt feature-icon"></i>
+                <h4>شحن فوري في دقايق</h4>
+                <p>بنخلص طلبك بأقصى سرعة وبدون أي تأخير أول ما تحول.</p>
+            </div>
+            <div class="feature-box">
+                <i class="fa-solid fa-shield-halved feature-icon" style="color: #25d366;"></i>
+                <h4>أمان تام على حسابك</h4>
+                <p>تعاملات رسمية وموثقة تحافظ على حسابك بنسبة 100%.</p>
+            </div>
+            <div class="feature-box">
+                <i class="fa-solid fa-headset feature-icon" style="color: #ff9800;"></i>
+                <h4>دعم فني متواجد دايماً</h4>
+                <p>الإدارة معاك لحظة بلحظة لحد ما شحنك يوصلك بالسلامة.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- زر الواتساب العائم المباشر للمدير -->
+    <a href="https://wa.me/201002173301" target="_blank" class="floating-wa" title="تواصل مباشر مع المدير"><i class="fa-brands fa-whatsapp"></i></a>
+
+    <!-- الفوتر الاحترافي مع الحقوق الكاملة -->
+    <footer>
+        <img src="sc.jpeg" alt="Medx Logo" class="footer-logo">
+        <p class="footer-text">𝑴𝑬𝑫𝑿 𝑺𝑻𝑶𝑹𝑬 - الوجهة الأولى لشحن الألعاب في مصر</p>
+        <p class="footer-subtext">جميع الحقوق محفوظة © 2026 تم التطوير والتأمين بواسطة عيلة 𝑴𝑬𝑫𝑿 ⚡</p>
+        <div class="footer-links">
+            <a href="#">الشروط والأحكام</a>
+            <a href="#">سياسة الخصوصية والأمان</a>
+            <a href="https://wa.me/201002173301" target="_blank">تواصل مع الإدارة</a>
+        </div>
+    </footer>
+
+    <!-- النوافذ المنبثقة -->
+    <div id="methodModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModals()"><i class="fa-solid fa-xmark"></i></span>
+            <h3 id="methodModalTitle">طريقة الشحن</h3>
+            <p style="color: #9aa4b2; text-align: center; margin-bottom: 25px; font-size: 16px; font-weight: 800;">تحب تشحن إزاي يا غالي؟ اختار الطريقة اللي تريحك:</p>
+            <button class="method-btn" onclick="openOrderModal('id')">بالآيدي السريع (ID)</button>
+            <button class="method-btn" onclick="openOrderModal('account')">تسجيل الدخول (حساب)</button>
+        </div>
+    </div>
+
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModals()"><i class="fa-solid fa-xmark"></i></span>
+            <h3 id="orderModalTitle">طلب خدمة</h3>
+            <form id="orderForm" onsubmit="submitOrder(event)">
+                <input type="hidden" id="orderType">
+                <input type="hidden" id="gameType">
+                
+                <label>اختار الباقة اللي تليق بيك:</label>
+                <select id="packageSelect" class="dark-input" required></select>
+                
+                <label>محتاج منها كام واحدة؟ (الكمية):</label>
+                <input type="number" id="quantity" class="dark-input" min="1" max="99" value="1" required>
+                
+                <div id="idInputDiv" style="display:none;">
+                    <label id="idLabel">هات رقم الآيدي (ID) بتاعك:</label>
+                    <input type="text" id="playerId" class="dark-input" maxlength="50" placeholder="أدخل البيانات هنا بكل أمان">
+                </div>
+                
+                <div id="accountInputDiv" style="display:none;">
+                    <label>اكتب بيانات حسابك هنا (في أمان تام):</label>
+                    <textarea id="accountData" class="dark-input" rows="3" maxlength="200" placeholder="الايميل، الباسورد، ونوع الربط (فيس/جوجل/تويتر)"></textarea>
+                </div>
+                
+                <label>اسمك إيه يا بطل؟</label>
+                <input type="text" id="userName" class="dark-input" maxlength="40" required placeholder="اكتب اسمك الكريم هنا">
+                
+                <label>رقم الواتساب بتاعك للتواصل:</label>
+                <input type="tel" id="userPhone" class="dark-input" maxlength="20" required placeholder="مثال: 010xxxxxxxx">
+                
+                <label>حابب مين من الإدارة يستلم طلبك؟</label>
+                <select id="adminSelect" class="dark-input" required>
+                    <option value="201002173301">المدير (+20 100 217 3301)</option>
+                    <option value="201096358709">المساعد الأول (+20 109 635 8709)</option>
+                    <option value="201041511734">المساعد الثاني (+20 104 151 1174)</option>
+                    <option value="201041519325">المساعد الثالث (+20 104 151 9325)</option>
+                </select>
+                
+                <button type="submit" class="btn-whatsapp-glow"><i class="fa-brands fa-whatsapp" style="font-size: 26px;"></i> يالا نبعت الطلب للواتساب 🚀</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* وظيفة مغير الألوان (Theme Customizer) */
+        function setTheme(color, glow) {
+            document.documentElement.style.setProperty('--primary-color', color);
+            document.documentElement.style.setProperty('--primary-glow', glow);
+        }
+
+        /* ميزة الألعاب المفضلة (Wishlist / Favorites) */
+        function toggleFavorite(event, btn) {
+            event.stopPropagation();
+            btn.classList.toggle('active');
+            const icon = btn.querySelector('i');
+            if (btn.classList.contains('active')) {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid');
+            } else {
+                icon.classList.remove('fa-solid');
+                icon.classList.add('fa-regular');
+            }
+            sortServicesGrid();
+        }
+
+        function sortServicesGrid() {
+            const grid = document.querySelector('.services-grid');
+            const cards = Array.from(grid.querySelectorAll('.service-card'));
+            cards.sort((a, b) => {
+                const aFav = a.querySelector('.fav-btn').classList.contains('active') ? 1 : 0;
+                const bFav = b.querySelector('.fav-btn').classList.contains('active') ? 1 : 0;
+                return bFav - aFav;
+            });
+            cards.forEach(card => grid.appendChild(card));
+        }
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+        }
+        document.addEventListener('mousedown', (e) => {
+            if(e.target.closest('a, button, .tilt-card, .service-card, .nav-item, .close, .theme-btn, .fav-btn')) playClickSound();
+        });
+
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+                const centerX = rect.width / 2; const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -12; 
+                const rotateY = ((x - centerX) / centerX) * 12;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                card.style.borderColor = "var(--primary-color)";
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+                card.style.borderColor = "var(--border-color)";
+            });
+        });
+
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.parentElement;
+                const answer = btn.nextElementSibling;
+                const isActive = item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(faq => { faq.classList.remove('active'); faq.querySelector('.faq-answer').style.maxHeight = null; });
+                if (!isActive) { item.classList.add('active'); answer.style.maxHeight = answer.scrollHeight + "px"; }
+            });
+        });
+
+        const typeText = "أهلاً بيك في بيتك التاني! 🎮 أسرع وأأمن مكان تشحن منه ألعابك وتتواصل مع عيلة 𝑴𝑬𝑫𝑿 بسهولة.";
+        let typeIndex = 0; const typeElement = document.getElementById('typing-effect');
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                setTimeout(() => { preloader.style.visibility = 'hidden'; revealScroll(); typeWriter(); }, 600);
+            }, 1800);
+        });
+        function typeWriter() { if (typeIndex < typeText.length) { typeElement.innerHTML += typeText.charAt(typeIndex); typeIndex++; setTimeout(typeWriter, 50); } else { typeElement.classList.remove('typing-text'); typeElement.classList.add('typing-finished'); } }
+
+        const canvas = document.getElementById('particles-canvas'); const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particlesArray = []; let mouseP = { x: null, y: null, radius: 150 };
+        window.addEventListener('mousemove', function(event) { mouseP.x = event.x; mouseP.y = event.y; });
+        class Particle {
+            constructor(x, y, dirX, dirY, size, color) { this.x = x; this.y = y; this.dirX = dirX; this.dirY = dirY; this.size = size; this.color = color; }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.shadowBlur = 15; ctx.shadowColor = this.color; ctx.fill(); }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.dirX = -this.dirX; if (this.y > canvas.height || this.y < 0) this.dirY = -this.dirY;
+                let dx = mouseP.x - this.x; let dy = mouseP.y - this.y; let dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < mouseP.radius + this.size) {
+                    if (mouseP.x < this.x && this.x < canvas.width - this.size * 10) this.x += 3; if (mouseP.x > this.x && this.x > this.size * 10) this.x -= 3;
+                    if (mouseP.y < this.y && this.y < canvas.height - this.size * 10) this.y += 3; if (mouseP.y > this.y && this.y > this.size * 10) this.y -= 3;
+                }
+                this.x += this.dirX; this.y += this.dirY; this.draw();
+            }
+        }
+        function initParticles() { particlesArray = []; let num = (canvas.height * canvas.width) / 12000; for (let i = 0; i < num; i++) { let size = (Math.random() * 2) + 1; let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2); let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2); let color = Math.random() > 0.5 ? '#00e5ff' : '#ff9800'; particlesArray.push(new Particle(x, y, (Math.random() * 1) - 0.5, (Math.random() * 1) - 0.5, size, color)); } }
+        function animateP() { requestAnimationFrame(animateP); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); } }
+        initParticles(); animateP(); window.addEventListener('resize', function() { canvas.width = innerWidth; canvas.height = innerHeight; initParticles(); });
+
+        function revealScroll() { document.querySelectorAll('.reveal').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add('active'); }); }
+        window.addEventListener('scroll', revealScroll);
+        function switchTab(tab) {
+            if (tab === 'services') { document.getElementById('home-view').style.display = 'none'; document.getElementById('services-view').style.display = 'block'; document.getElementById('nav-services').classList.add('active'); document.getElementById('nav-home').classList.remove('active'); } else { document.getElementById('services-view').style.display = 'none'; document.getElementById('home-view').style.display = 'block'; document.getElementById('nav-home').classList.add('active'); document.getElementById('nav-services').classList.remove('active'); }
+            window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(revealScroll, 100);
+        }
+
+        const pricesFF_ID = [
+            "110 جوهره 💎 = 60ج", "231 جوهره 💎 = 110ج", "341 جوهره 💎 = 165ج",
+            "460 جوهره 💎 = 230ج", "583 جوهره 💎 = 265ج", "814 جوهره 💎 = 450ج",
+            "1040 جوهره 💎 = 500ج", "1188 جوهره 💎 = 530ج", "1771 جوهره 💎 = 860ج",
+            "2002 جوهره 💎 = 950ج", "2420 جوهره 💎 = 1080ج", "3000 جوهره 💎 = 1350ج",
+            "--- العضويات ---", "عضوية أسبوعية = 125ج", "عضوية شهرية = 550ج", "عضوية مستوي (Level up) = 220ج"
+        ];
+        
+        const pricesFF_Acc = [
+            "100 جوهره 💎 = 50ج", "310 جوهره 💎 = 130ج", "520 جوهره 💎 = 200ج",
+            "1060 جوهره 💎 = 365ج", "2180 جوهره 💎 = 740ج", "5600 جوهره 💎 = 1800ج",
+            "--- العضويات والدروب ---", "عضوية أسبوعية = 85ج", "عضوية شهرية = 365ج", "دروب 1$ = 50ج", "دروب 2$ = 90ج"
+        ];
+
+        const pricesPUBG_ID = [
+            "30 شدة بـ 40 جنيه", "60 شدة بـ 55 جنيه", "325 شدة بـ 260 جنيه", 
+            "385 شدة بـ 300 جنيه", "660 شدة بـ 500 جنيه", "1800 شدة بـ 1235 جنيه", 
+            "3850 شدة بـ 2250 جنيه", "8100 شدة بـ 4400 جنيه"
+        ];
+
+        const pricesPUBG_Acc = [
+            "برايم عادي بـ 75 جنيه", "برايم بلس بـ 455 جنيه", 
+            "عرض ازدهار 1$ بـ 60 جنيه", "عرض ازدهار 3$ بـ 150 جنيه", "عرض ازدهار 5$ بـ 240 جنيه"
+        ];
+
+        const pricesPES = [
+            "130 كوينز بـ 80 جنيه", "550 كوينز بـ 280 جنيه", "1040 كوينز بـ 480 جنيه", 
+            "2130 كوينز بـ 930 جنيه", "3250 كوينز بـ 1450 جنيه", "5700 كوينز بـ 2300 جنيه"
+        ];
+
+        const pricesFIFA = [
+            "100 بوينت بـ 75 جنيه", "600 بوينت بـ 250 جنيه", "1200 بوينت بـ 550 جنيه", 
+            "2600 بوينت بـ 1050 جنيه", "6900 بوينت بـ 2440 جنيه", "14000 بوينت بـ 4900 جنيه"
+        ];
+
+        const pricesTikTok = [
+            "70 عملة بـ 70 جنيه", "350 عملة بـ 250 جنيه", "700 عملة بـ 450 جنيه", 
+            "1400 عملة بـ 900 جنيه", "2800 عملة بـ 1900 جنيه", "3500 عملة بـ 2200 جنيه", "7000 عملة بـ 4350 جنيه"
+        ];
+        
+        let currentGameKey = 'ff';
+        let currentGameTitle = 'فري فاير';
+
+        function openMethodModal(key, title) { 
+            currentGameKey = key;
+            currentGameTitle = title;
+            document.getElementById('methodModalTitle').innerText = 'طريقة شحن (' + title + ')';
+            document.getElementById('methodModal').style.display = 'block'; 
+        }
+
+        function openDirectOrder(key, title) {
+            currentGameKey = key;
+            currentGameTitle = title;
+            openOrderModal('id'); 
+        }
+        
+        function closeModals() { document.getElementById('methodModal').style.display = 'none'; document.getElementById('orderModal').style.display = 'none'; }
+        
+        function openOrderModal(type) { 
+            document.getElementById('methodModal').style.display = 'none'; 
+            document.getElementById('orderModal').style.display = 'block'; 
+            document.getElementById('orderType').value = type; 
+            document.getElementById('gameType').value = currentGameKey;
+            
+            const sel = document.getElementById('packageSelect'); sel.innerHTML = ''; 
+            
+            let opts = [];
+            if (currentGameKey === 'ff') opts = type === 'id' ? pricesFF_ID : pricesFF_Acc;
+            else if (currentGameKey === 'pubg') opts = type === 'id' ? pricesPUBG_ID : pricesPUBG_Acc;
+            else if (currentGameKey === 'pes') opts = pricesPES;
+            else if (currentGameKey === 'fifa') opts = pricesFIFA;
+            else if (currentGameKey === 'tiktok') opts = pricesTikTok;
+
+            if (currentGameKey === 'ff' || currentGameKey === 'pubg') {
+                document.getElementById('orderModalTitle').innerText = type === 'id' ? 'طلب شحن ' + currentGameTitle + ' (بالآيدي 🆔)' : 'طلب شحن ' + currentGameTitle + ' (حساب 👤)';
+            } else {
+                document.getElementById('orderModalTitle').innerText = 'طلب شحن ' + currentGameTitle;
+            }
+            
+            opts.forEach(o => { 
+                let opt = document.createElement('option'); opt.value = o; opt.innerText = o; 
+                if(o.includes('---')) { opt.disabled = true; opt.style.color = '#00e5ff'; }
+                sel.appendChild(opt); 
+            }); 
+            
+            let idLabel = document.getElementById('idLabel');
+            if(currentGameKey === 'tiktok') {
+                idLabel.innerText = 'اليوزر نيم (Username) بتاعك:';
+            } else {
+                idLabel.innerText = 'هات رقم الآيدي (ID) بتاعك:';
+            }
+
+            if(type === 'id') { 
+                document.getElementById('idInputDiv').style.display = 'block'; 
+                document.getElementById('playerId').required = true; 
+                document.getElementById('accountInputDiv').style.display = 'none'; 
+                document.getElementById('accountData').required = false; 
+            } else { 
+                document.getElementById('idInputDiv').style.display = 'none'; 
+                document.getElementById('playerId').required = false; 
+                document.getElementById('accountInputDiv').style.display = 'block'; 
+                document.getElementById('accountData').required = true; 
+            } 
+        }
+        
+        function submitOrder(e) {
+            e.preventDefault(); 
+            const t = document.getElementById('orderType').value; 
+            const gameKey = document.getElementById('gameType').value;
+            const p = document.getElementById('packageSelect').value; 
+            const q = document.getElementById('quantity').value; 
+            const n = document.getElementById('userName').value.trim(); 
+            const ph = document.getElementById('userPhone').value.trim(); 
+            const a = document.getElementById('adminSelect').value;
+            
+            let gameNameText = '';
+            if(gameKey === 'ff') gameNameText = 'فري فاير';
+            else if(gameKey === 'pubg') gameNameText = 'ببجي موبايل';
+            else if(gameKey === 'pes') gameNameText = 'بيس موبايل (eFootball)';
+            else if(gameKey === 'fifa') gameNameText = 'فيفا موبايل (FC Mobile)';
+            else if(gameKey === 'tiktok') gameNameText = 'عملات تيك توك';
+
+            let methodText = '';
+            if(gameKey === 'ff' || gameKey === 'pubg') {
+                methodText = t === 'id' ? ' (عبر الـ ID 🆔)' : ' (عبر الحساب 👤)';
+            }
+
+            let ext = '';
+            if (t === 'account' && (gameKey === 'ff' || gameKey === 'pubg')) {
+                ext = `*بيانات الحساب:* ${document.getElementById('accountData').value.trim()}`;
+            } else {
+                let fieldName = gameKey === 'tiktok' ? 'اليوزر نيم' : 'رقم الـ ID';
+                ext = `*${fieldName}:* ${document.getElementById('playerId').value.trim()}`;
+            }
+            
+            const msg = `*أهلاً بيك يا غالي، ده طلب شحن جديد من المتجر* 🔥\n\n*الخدمة:* ${gameNameText}${methodText}\n*الباقة اللي اخترتها:* ${p}\n*الكمية المطلوبة:* ${q}\n${ext}\n\n*اسم البطل:* ${n}\n*رقم التواصل:* ${ph}`;
+            
+            const toast = document.getElementById('toast'); toast.classList.add('show');
+            setTimeout(() => { 
+                window.open(`https://wa.me/${a}?text=${encodeURIComponent(msg)}`, '_blank'); 
+                toast.classList.remove('show'); closeModals(); document.getElementById('orderForm').reset();
+            }, 1800);
+        }
+    </script>
+</body>
+</html>
