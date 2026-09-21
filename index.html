@@ -312,6 +312,29 @@
         .method-btn:hover { border-color: #ff9800; color: #ff9800; box-shadow: 0 0 25px rgba(255, 152, 0, 0.25); transform: translateY(-4px); }
         .btn-whatsapp-glow { background-color: #25d366; color: #fff; border: none; width: 100%; padding: 18px; border-radius: 14px; font-size: 19px; font-weight: 900; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s;}
         .btn-whatsapp-glow:hover { background-color: #1ebc59; box-shadow: 0 12px 45px rgba(37, 211, 102, 0.6); transform: translateY(-5px); }
+
+        /* =========================================
+           تجاوب الشاشات (Mobile Responsiveness)
+           ========================================= */
+        @media (max-width: 768px) {
+            header { padding: 15px 15px; flex-direction: column; gap: 12px; }
+            .logo-area { width: 100%; justify-content: center; font-size: 24px; }
+            .header-controls { justify-content: center; width: 100%; gap: 10px; }
+            .nav-item { padding: 8px 14px; font-size: 14px; }
+            .hero { padding: 40px 15px 15px; }
+            .hero-title-wrapper h1 { font-size: 38px; }
+            .main-hero-logo { width: 75px; height: 75px; }
+            .hero p { font-size: 15px; line-height: 1.6; }
+            .interactive-box { padding: 25px 15px; margin-bottom: 35px; }
+            .interactive-box h2 { font-size: 24px; }
+            .section-header h3 { font-size: 22px; }
+            .modal-content { padding: 25px 20px; width: 95%; margin: 15% auto; }
+            .modal-content h3 { font-size: 20px; }
+            .floating-wa { bottom: 20px; left: 20px; width: 55px; height: 55px; font-size: 30px; }
+            .btn-whatsapp-glow { font-size: 16px; padding: 15px; }
+            .dark-input { padding: 14px; }
+            .channels-grid, .admin-grid, .steps-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
