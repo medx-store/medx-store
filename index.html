@@ -288,12 +288,6 @@
         .service-card h4 { font-size: 17px; color: var(--text-light); margin-bottom: 4px; font-weight: 800; }
         .service-card p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 
-        /* =========================================
-           إشعار منبثق للطلبات (Toast Notification)
-           ========================================= */
-        .toast-notification { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: rgba(13, 17, 23, 0.95); border: 2px solid var(--primary-color); color: #fff; padding: 18px 35px; border-radius: 50px; box-shadow: 0 0 40px var(--primary-glow); z-index: 100000; font-weight: 900; font-size: 16px; display: flex; align-items: center; gap: 15px; transition: bottom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); }
-        .toast-notification.show { bottom: 50px; }
-
         /* زر الواتساب العائم المباشر للمدير */
         .floating-wa { position: fixed; bottom: 35px; left: 35px; width: 65px; height: 65px; background-color: #25d366; color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 35px; box-shadow: 0 0 25px rgba(37, 211, 102, 0.6); z-index: 999; animation: floatBtn 3s infinite ease-in-out; text-decoration: none; }
         .floating-wa:hover { color: #fff; transform: scale(1.1); }
@@ -327,11 +321,6 @@
     <div id="preloader">
         <img src="sc.jpeg" alt="Medx Loading" class="loader-logo">
         <div class="loader-text">𝑴𝑬𝑫𝑿 𝑺𝑻𝑶𝑹𝑬</div>
-    </div>
-
-    <div id="toast" class="toast-notification">
-        <span class="toast-icon">🚀</span>
-        جهزنا طلبك يا بطل.. ثواني وهنحولك للواتساب
     </div>
 
     <div class="bg-watermark">𝑴𝑬𝑫𝑿 𝑺𝑻𝑶𝑹𝑬</div>
@@ -839,11 +828,9 @@
             
             const msg = `*أهلاً بيك يا غالي، ده طلب شحن جديد من المتجر* 🔥\n\n*الخدمة:* ${gameNameText}${methodText}\n*الباقة اللي اخترتها:* ${p}\n*الكمية المطلوبة:* ${q}\n${ext}\n\n*اسم البطل:* ${n}\n*رقم التواصل:* ${ph}`;
             
-            const toast = document.getElementById('toast'); toast.classList.add('show');
-            setTimeout(() => { 
-                window.open(`https://wa.me/${a}?text=${encodeURIComponent(msg)}`, '_blank'); 
-                toast.classList.remove('show'); closeModals(); document.getElementById('orderForm').reset();
-            }, 1800);
+            window.open(`https://wa.me/${a}?text=${encodeURIComponent(msg)}`, '_blank'); 
+            closeModals(); 
+            document.getElementById('orderForm').reset();
         }
     </script>
 </body>
