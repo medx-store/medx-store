@@ -301,8 +301,25 @@
         .footer-links a { color: var(--primary-color); text-decoration: none; font-size: 14px; font-weight: 800; transition: 0.3s; }
         .footer-links a:hover { color: #fff; text-shadow: 0 0 10px var(--primary-color); }
         
+        /* =========================================
+           نوافذ الطلب المنبثقة والتمرير الداخلي (Modals)
+           ========================================= */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(15px); }
-        .modal-content { background: var(--modal-bg); margin: 5% auto; padding: 40px; border: 1px solid rgba(0, 229, 255, 0.2); width: 90%; max-width: 500px; border-radius: 24px; position: relative; box-shadow: 0 25px 60px var(--primary-glow); animation: modalOpen 0.3s; border-top: 1px solid rgba(255,255,255,0.1); }
+        
+        .modal-content { 
+            background: var(--modal-bg); margin: 5% auto; padding: 40px; 
+            border: 1px solid rgba(0, 229, 255, 0.2); width: 90%; max-width: 500px; 
+            border-radius: 24px; position: relative; box-shadow: 0 25px 60px var(--primary-glow); 
+            animation: modalOpen 0.3s; border-top: 1px solid rgba(255,255,255,0.1); 
+            max-height: 85vh; /* السماح بتحديد أقصى ارتفاع */
+            overflow-y: auto; /* تشغيل التمرير الداخلي */
+        }
+        
+        /* شكل احترافي لشريط التمرير داخل الطلب */
+        .modal-content::-webkit-scrollbar { width: 6px; }
+        .modal-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 10px; }
+
         @keyframes modalOpen { from { transform: scale(0.8) translateY(30px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
         .close { color: var(--text-muted); position: absolute; top: 20px; right: 25px; font-size: 28px; font-weight: 900; cursor: pointer; }
         .modal-content h3 { text-align: center; margin-bottom: 25px; color: #fff; font-size: 24px; font-weight: 900; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 18px; }
@@ -328,8 +345,17 @@
             .interactive-box { padding: 25px 15px; margin-bottom: 35px; }
             .interactive-box h2 { font-size: 24px; }
             .section-header h3 { font-size: 22px; }
-            .modal-content { padding: 25px 20px; width: 95%; margin: 15% auto; }
+            
+            /* تظبيط المربع بتاع الطلب على شاشات الموبايل */
+            .modal-content { 
+                padding: 25px 20px; 
+                width: 95%; 
+                margin: 10% auto; /* رفع المربع لفوق شوية عشان الكيبورد */
+                max-height: 80vh; /* تحديد الارتفاع لضمان تشغيل التمرير */
+                overflow-y: auto; 
+            }
             .modal-content h3 { font-size: 20px; }
+            
             .floating-wa { bottom: 20px; left: 20px; width: 55px; height: 55px; font-size: 30px; }
             .btn-whatsapp-glow { font-size: 16px; padding: 15px; }
             .dark-input { padding: 14px; }
