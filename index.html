@@ -126,7 +126,7 @@
             background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; 
             padding: 22px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; 
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.08);
-            transition: border-color 0.3s, box-shadow 0.3s; transform: translateZ(0);
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s; transform: translateZ(0);
         }
         
         .admin-card { display: block; padding: 35px 15px; text-align: center; }
@@ -191,7 +191,6 @@
         .service-card::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--game-color), transparent); transition: 0.4s; }
         .service-card:hover::after { left: 100%; }
         .service-card:hover { border-color: var(--game-color); box-shadow: 0 0 20px var(--game-color); transform: translateY(-4px); background: rgba(18, 24, 35, 0.98); }
-        .service-card:active { transform: scale(0.98); }
         .service-icon { font-size: 45px; color: var(--game-color); margin-bottom: 12px; transition: 0.3s; filter: drop-shadow(0 0 8px var(--game-color)); }
         .service-card:hover .service-icon { filter: drop-shadow(0 0 15px var(--game-color)) scale(1.1); transform: translateY(-3px); }
         .service-card h4 { font-size: 17px; color: var(--text-light); margin-bottom: 4px; font-weight: 800; }
@@ -210,7 +209,7 @@
         .footer-links a:hover { color: #fff; text-shadow: 0 0 10px var(--primary-color); }
         
         /* نوافذ الطلب المنبثقة والتمرير الداخلي السلس */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         .modal-content { 
             background: var(--modal-bg); margin: 5% auto; padding: 40px; 
             border: 1px solid rgba(0, 229, 255, 0.2); width: 90%; max-width: 500px; 
@@ -228,23 +227,27 @@
         form label { display: block; margin-top: 20px; margin-bottom: 10px; font-size: 15px; font-weight: 800; color: #a5b0c0; }
         .dark-input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #1a2332; background-color: var(--input-bg); color: #fff; font-weight: 700; margin-bottom: 10px; appearance: none; }
         .method-btn { background: var(--input-bg); border: 2px solid #1a2332; color: #fff; width: 100%; padding: 18px; border-radius: 14px; margin-bottom: 16px; font-weight: 900; font-size: 18px; cursor: pointer; transition: 0.3s;}
-        .method-btn:hover { border-color: #ff9800; color: #ff9800; transform: translateY(-3px); }
         .btn-whatsapp-glow { background-color: #25d366; color: #fff; border: none; width: 100%; padding: 18px; border-radius: 14px; font-size: 19px; font-weight: 900; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s;}
-        .btn-whatsapp-glow:hover { background-color: #1ebc59; box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4); transform: translateY(-3px); }
 
         /* =========================================
-           أقصى تحسين للأداء على الموبايل (Zero Lag Mode)
+           تأثيرات شيك وتجاوب سريع للموبايل (Chic & Smooth Mobile)
            ========================================= */
         @media (max-width: 768px) {
-            /* إيقاف الحركات والظل التقيل تماماً على الموبايل */
-            .magic-glow, body::before, body::after, .bg-watermark, .main-hero-logo, .live-dot { animation: none !important; }
-            .magic-glow { text-shadow: 0 0 10px var(--primary-color) !important; }
+            /* إيقاف العلامة المائية المزعجة للشاشة الصغيرة فقط */
+            .bg-watermark { display: none !important; }
             
-            /* إزالة الضبابية (البلور) لأنها تسبب التقطيع الشديد واستبدالها بلون داكن */
-            header, .interactive-box, .channel-card, .admin-card, .step-card, .feature-box, .faq-item, .modal {
+            /* إزالة البلور الثقيل من الكروت واستبداله بتدرج لوني زجاجي أنيق (Zero Lag) */
+            .interactive-box, .channel-card, .admin-card, .step-card, .feature-box, .faq-item, .service-card {
                 backdrop-filter: none !important;
                 -webkit-backdrop-filter: none !important;
-                background-color: rgba(13, 17, 23, 0.98) !important;
+                background: linear-gradient(145deg, rgba(22, 28, 40, 0.95), rgba(10, 14, 20, 0.98)) !important;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05) !important;
+            }
+
+            /* تأثير التاتش: لما تدوس على أي كارت أو زرار ينزل لتحت (إحساس ممتاز) */
+            .channel-card:active, .admin-card:active, .service-card:active, .btn:active, .method-btn:active, .btn-whatsapp-glow:active {
+                transform: scale(0.96) !important;
+                transition: transform 0.1s;
             }
 
             header { padding: 12px 15px; flex-direction: column; gap: 10px; }
@@ -258,8 +261,11 @@
             .interactive-box { padding: 25px 15px; margin-bottom: 35px; }
             .interactive-box h2 { font-size: 24px; }
             .section-header h3 { font-size: 22px; }
-            .modal-content { padding: 25px 20px; width: 95%; margin: 8% auto; max-height: 80vh; background-color: #0a0d14 !important;}
+            
+            /* تظبيط مربع الطلبات وتمرير السكرول */
+            .modal-content { padding: 25px 20px; width: 95%; margin: 8% auto; max-height: 80vh; }
             .modal-content h3 { font-size: 20px; }
+            
             .floating-wa { bottom: 20px; left: 20px; width: 55px; height: 55px; font-size: 30px; }
             .btn-whatsapp-glow { font-size: 16px; padding: 15px; }
             .dark-input { padding: 14px; }
