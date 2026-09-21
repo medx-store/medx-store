@@ -777,8 +777,8 @@
             }); 
             
             let idLabel = document.getElementById('idLabel');
-            if(currentGameKey === 'tiktok') {
-                idLabel.innerText = 'اليوزر نيم (Username) بتاعك:';
+            if(currentGameKey === 'pes' || currentGameKey === 'fifa' || currentGameKey === 'tiktok') {
+                idLabel.innerText = 'اكتب بيانات الحساب:';
             } else {
                 idLabel.innerText = 'هات رقم الآيدي (ID) بتاعك:';
             }
@@ -822,7 +822,7 @@
             if (t === 'account' && (gameKey === 'ff' || gameKey === 'pubg')) {
                 ext = `*بيانات الحساب:* ${document.getElementById('accountData').value.trim()}`;
             } else {
-                let fieldName = gameKey === 'tiktok' ? 'اليوزر نيم' : 'رقم الـ ID';
+                let fieldName = (gameKey === 'pes' || gameKey === 'fifa' || gameKey === 'tiktok') ? 'بيانات الحساب' : 'رقم الـ ID';
                 ext = `*${fieldName}:* ${document.getElementById('playerId').value.trim()}`;
             }
             
